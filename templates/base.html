@@ -1,4 +1,5 @@
 {% load static %}
+{% load custom_filters %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,40 +37,16 @@
     <script src="{% static '/node_modules/aos/dist/aos.js' %}"></script>
   	<script src="{% static '/node_modules/jquery-validation/dist/jquery.validate.min.js' %}"></script>
     <script src="{% static '/node_modules/jquery-validation/dist/localization/messages_es.min.js' %}"></script>
+    <style>
+    .bg-blue_01 {
+      --bs-bg-opacity: 1;
+      --bs-blue_01-rgb: 223, 249, 242;
+      background-color: rgba(var(--bs-blue_01-rgb), var(--bs-bg-opacity)) !important;
+    }
+    </style>
 </head>
 
-<nav class="navbar navbar-expand-md bg-light" id="main">
-  <div class="container">
-    <a class="navbar-brand" href="#" data-aos="fade-right">
-    	<img src="{% static '/assets/img/main_logo_vetLink.png' %}" alt="">
-    </a>
-    <button class="navbar-toggler custom_hamb" type="button" onclick="showMenu();">
-      <div></div>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNavDropdown" data-aos="fade-left">
-      <button class="close" onclick="showMenu();">
-        <div></div>
-      </button>
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
-          <a class="nav-link active" id="inicio__" aria-current="page" href="#" onclick="showMenu(this);">Inicio</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link scrollTo" id="proceso__" href="#proceso" onclick="showMenu(this);">¿Cómo funciona?</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link scrollTo" id="contacto__" href="#contacto" onclick="showMenu(this);">Contacto</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link custom_btn2" target="_blank" href="https://VetLink.com.mx/">
-            <span>Regístrate</span>
-            <span>Regístrate</span>
-          </a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
+{% include 'core/includes/nav_bar.html' %}
 
 <body>
   <!-- Google Tag Manager (noscript) -->
@@ -79,132 +56,93 @@
   
   <main>
 
+    {% if slide %}
     <section class="position-relative" id="slide">
       <img src="{% static '/assets/img/vetLinkHead.svg' %}" alt="">
       <div class="container">
         <div class="row">
           <div class="col-12 col-lg-8 col-xl-6">
-            <h1 data-aos="fade-up-right" data-aos-delay="100">Transforma tu manera de comprar suministros médicos.</h1>
-            <p data-aos="fade-up-right" data-aos-delay="200">VetLink es la plataforma diseñada para que clínicas y hospitales veterinarios compren medicamentos, suministros y equipo médico de forma inteligente.</p>
-            <p data-aos="fade-up-right" data-aos-delay="300" data-aos-offset="-300">¡Transforma tu manera de comprar!</p>
+            <h1 data-aos="fade-up-right" data-aos-delay="100">{{slide.titulo}}</h1>
+            <h3 data-aos="fade-up-right" data-aos-delay="200">{{slide.subtitulo}}</h3>
+            <p data-aos="fade-up-right" data-aos-delay="300" data-aos-offset="-300">{{slide.texto}}</p>
             <div data-aos="fade-up-right" data-aos-delay="400" data-aos-offset="-300">
               <a href="#proceso" class="custom_btn blue_ me-2 scrollTo">
-                <span>Descubre VetLink</span>
-                <span>Descubre VetLink</span>
+                <span>{{slide.boton_1}}</span>
+                <span>{{slide.boton_1}}</span>
               </a>
               <a href="#contacto" class="custom_btn light_ scrollTo">
-                <span>Contáctanos</span>
-                <span>Contáctanos</span>
+                <span>{{slide.boton_2}}</span>
+                <span>{{slide.boton_2}}</span>
               </a>
             </div>
           </div>
         </div>
       </div>
     </section>
+    {% else %}
+      <h1>Error al cargar data</h1>
+    {% endif %}
+
     {% if messages %}
       {% include 'core/includes/messages.html' %}
     {% endif %} 
-  
-    <section class="py-6 bg-blue_01 block_ctrl" id="video">
+    
+    {% if seccion_cuadros %}
+    <section class="py-6 bg-blue_01 block_ctrl" id="proceso">
       <div class="container">
-        <h3 class="block_ctrl text-center h1 text-blue_02 pb-5">Mira el video y conoce VetLink</h3>
-        <div class="row justify-content-center align-items-center">
-          <div class="col-12 col-lg-6" data-aos="fade-up-right" data-aos-delay="0">
-            <div class="video">
-              <img src="{% static '/assets/img/video_thumb.jpg' %}" alt="">
-              <a href="{% static '/assets/media/Vetlink_VF.mp4' %}" data-lity>
-                <img src="{% static './assets/img/play.png' %}" alt="">
-              </a>
-            </div>
+        <h3 class="block_ctrl h1 text-blue_02 pb-5">{{ seccion_cuadros.titulo }}</h3>
+        <div class="block_ctrl">
+          <div class="row w-100 m-0 justify-content-center align-items-center square_item">
+            {% if cuadros %}
+              {% for cuadro in cuadros %}
+              {% with delay=forloop.counter|mul:100 %}
+              <div class="col-12 col-md-6 col-lg-3">
+                <div data-aos="fade-up-left" data-aos-delay="{{ delay }}">
+                  <img src="{{ cuadro.icono.url }}" alt="">
+                  <p>{{cuadro.texto}}</p>
+                </div>
+              </div>
+              {% endwith %}
+              {% endfor %}
+              {% else %}
+              <h1>Error al cargar data</h1>
+            {% endif %}
           </div>
         </div>
       </div>
     </section>
+    {% else %}
+      <h1>Error al cargar data</h1>
+    {% endif %}
 
+    {% if seccion_accordeons %}
     <section class="block_ctrl py-6" id="por-que">
       <div class="container">
-        <h3 class="block_ctrl text-center h1 text-blue_02 pb-5">¿Por qué usar VetLink?</h3>
+        <h3 class="block_ctrl text-center h1 text-blue_02 pb-5">{{seccion_accordeons.titulo}}</h3>
         <div class="row justify-content-center align-items-center">
           <div class="col-12 col-lg-9 col-xl-8">
             <div class="accordion" id="accordionExample">
-              <div class="accordion-item" data-aos="fade-up" data-aos-delay="0">
-                <h2 class="accordion-header" id="headingOne">
-                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                    No tiene costo
-                  </button>
-                </h2>
-                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                  <div class="accordion-body">
-                    <p>Usar VetLink no tiene costo. Solo regístrate y disfruta sus beneficios</p>
-                  </div>
-                </div>
-                <img src="{% static '/assets/img/C1.svg' %}" alt="">
-              </div>
-              <div class="accordion-item" data-aos="fade-up" data-aos-delay="100">
+              {% if accordeons %}
+              {% for accordeon in accordeons %}
+              {% with delay=forloop.counter|mul:100 %}
+              <div class="accordion-item" data-aos="fade-up" data-aos-delay="{{ delay }}">
                 <h2 class="accordion-header" id="headingTwo">
                   <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                    Disponible 24/7
+                    {{accordeon.titulo}}
                   </button>
                 </h2>
                 <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
                   <div class="accordion-body">
-                    <p>Haz tu requerimiento en cualquier momento desde PC, Tablet o celular. Es muy fácil</p>
+                    <p>{{accordeon.texto}}</p>
                   </div>
                 </div>
-                <img src="{% static '/assets/img/C2.svg' %}" alt="">
+                <img src="{{ accordeon.icono.url }}" alt="">
               </div>
-              <div class="accordion-item" data-aos="fade-up" data-aos-delay="200">
-                <h2 class="accordion-header" id="headingThree">
-                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                    Sin mínimo de compra
-                  </button>
-                </h2>
-                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
-                  <div class="accordion-body">
-                    <p>Solicita solo los insumos que necesites</p>
-                  </div>
-                </div>
-                <img src="{% static '/assets/img/C3.svg' %}" alt="">
-              </div>
-              <div class="accordion-item" data-aos="fade-up" data-aos-delay="300">
-                <h2 class="accordion-header" id="headingFour">
-                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                    Compra a los mejores precios
-                  </button>
-                </h2>
-                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
-                  <div class="accordion-body">
-                    <p>Recibe múltiples cotizaciones de proveedores de todo México. Elige el mejor precio del mercado</p>
-                  </div>
-                </div>
-                <img src="{% static '/assets/img/C4.svg' %}" alt="">
-              </div>
-              <div class="accordion-item" data-aos="fade-up" data-aos-delay="400">
-                <h2 class="accordion-header" id="headingFive">
-                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-                    Envío seguro y al mejor costo
-                  </button>
-                </h2>
-                <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#accordionExample">
-                  <div class="accordion-body">
-                    <p>Nuestros convenios con proveedores logísticos te garantizan el mejor costo de envío</p>
-                  </div>
-                </div>
-                <img src="{% static '/assets/img/C5.svg' %}" alt="">
-              </div>
-              <div class="accordion-item" data-aos="fade-up" data-aos-delay="500">
-                <h2 class="accordion-header" id="headingSix">
-                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
-                    Es seguro de usar
-                  </button>
-                </h2>
-                <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix" data-bs-parent="#accordionExample">
-                  <div class="accordion-body">
-                    <p>Todos los pagos son procesados a través de un portal especializado, cumpliendo con todos los estándares de ciberseguridad.</p>
-                  </div>
-                </div>
-                <img src="{% static '/assets/img/C6.svg' %}" alt="">
-              </div>
+              {% endwith %}
+              {% endfor %}
+              {% else %}
+              <h1>Error al cargar data</h1>
+            {% endif %}
             </div>
           </div>
         </div>
@@ -218,53 +156,50 @@
         </div>
       </div>
     </section>
+    {% else %}
+      <h1>Error al cargar data</h1>
+    {% endif %}
     
-    <section class="py-6 bg-blue_01 block_ctrl" id="proceso">
+    {% if seccion_video %}
+    <section class="py-6 bg-blue_01 block_ctrl" id="video">
       <div class="container">
-        <h3 class="block_ctrl h1 text-blue_02 pb-5">Simplificamos el proceso de compra de insumos médicos para clínicas y hospitales veterinarios.</h3>
-        <div class="block_ctrl">
-          <div class="row w-100 m-0 justify-content-center align-items-center square_item">
-            <div class="col-12 col-md-6 col-lg-3">
-              <div data-aos="fade-up-left" data-aos-delay="100">
-                <img src="{% static '/assets/img/A1.svg' %}" alt="">
-                <p>Crea una cuenta y registra la clínica u hospital que representas.</p>
-              </div>
+        <h3 class="block_ctrl text-center h1 text-blue_02 pb-5">{{seccion_video.titulo}}</h3>
+        <div class="row justify-content-center align-items-center">
+          <div class="col-12 col-lg-6" data-aos="fade-up-right" data-aos-delay="0">
+            {% if video_seccion_principal %}
+            <div class="video">
+              <img src="{{video_seccion_principal.thumbnail.url}}" alt="">
+              <a href="{{video_seccion_principal.video_file.url}}" data-lity>
+                <img src="{% static './assets/img/play.png' %}" alt="">
+              </a>
             </div>
-            <div class="col-12 col-md-6 col-lg-3">
-              <div data-aos="fade-up-left" data-aos-delay="300">
-                <img src="{% static '/assets/img/A2.svg' %}" alt="">
-                <p>Solicita los insumos que necesites. Recibe cotizaciones de proveedores de todo México.</p>
-              </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-3">
-              <div data-aos="fade-up-left" data-aos-delay="500">
-                <img src="{% static '/assets/img/A3.svg' %}" alt="">
-                <p>Elige la mejor oferta y paga de forma segura con efectivo, tarjeta o transferencia bancaria.</p>
-              </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-3">
-              <div data-aos="fade-up-left" data-aos-delay="700">
-                <img src="{% static '/assets/img/A4.svg' %}" alt="">
-                <p>Recibe tu pedido a domicilio en tiempo y forma. Obtén el mejor costo de envío.</p>
-              </div>
-            </div>
+            {% else %}
+              <h1>Error al cargar data</h1>
+            {% endif %}
           </div>
         </div>
       </div>
     </section>
+    {% else %}
+      <h1>Error al cargar data</h1>
+    {% endif %}
 
+    {% if seccion_recomendaciones %}
     <section class="block_ctrl py-6" id="por-que">
       <div class="container">
-        <h3 class="block_ctrl text-center h1 text-blue_02 pb-5">Algunos usuarios que ya utilizan VetLink</h3>
+        <h3 class="block_ctrl text-center h1 text-blue_02 pb-5">{{seccion_recomendaciones.titulo}}</h3>
         <div class="row justify-content-center align-items-center">
           <div class="col-12 col-lg-9 col-xl-8">
             <img src="{% static '/assets/img/logosPlataformas.svg' %}" alt="">
           </div>
         </div>
-        
       </div>
     </section>
+    {% else %}
+      <h1>Error al cargar data</h1>
+    {% endif %}
 
+    {% if seccion_recomendaciones %}
     <section class="block_ctrl pt-0 pb-0 pt-md-6 pb-md-6" id="contacto">
       <div class="container pb-0 pt-0 pb-md-5 pt-md-4">
         <div class="row justify-content-center align-items-center">
@@ -300,27 +235,29 @@
             <p class="h4 block_ctrl text-light text-center pb-4">Contacto</p>
             <div class="row w-100 m-0 justify-content-center align-items-center">
               <div class="col-12 col-sm-10 col-md-8 col-lg-7">
+
+                {% if contacto_items %}
+
                 <div class="block_ctrl contact_info">
-                  <a href="tel:+525556392735">
-                    <img src="{% static './assets/img/B1.svg' %}" alt="teléfono VetLink">
-                    <span>55 5639 2735</span>
+                  {% for contacto in contacto_items %}
+                  <a href="{{contacto.link}}">
+                    <img src="{{contacto.icono.url}}" alt="teléfono VetLink">
+                    <span>{{contacto.texto}}</span>
                   </a>
-                  <a href="mailto:contacto@endicom.com.mx">
-                    <img src="{% static './assets/img/B2.svg' %}" alt="email VetLink">
-                    <span>contacto@endicom.com.mx</span>
-                  </a>
-                  <a href="https://goo.gl/maps/BcuqxiLFWAcRhpaQ6" target="_blank">
-                    <img src="{% static '/assets/img/B3.svg' %}" alt="ubicación VetLink">
-                    <span>Gabriel Mancera 725, col. del Valle Centro, Benito Juárez, 03100 Ciudad de México.</span>
-                  </a>
+                  {% endfor %}
                 </div>
+                {% else %}
+                  <h1>Error al cargar data</h1>
+                {% endif %}
               </div>
             </div>
           </div>
         </div>
       </div>
     </section>  
-
+    {% else %}
+      <h1>Error al cargar data</h1>
+    {% endif %}
     
   </main>
 

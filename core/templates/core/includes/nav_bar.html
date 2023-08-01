@@ -1,0 +1,47 @@
+{% load static %}
+{% if navbar %}
+<nav class="navbar navbar-expand-md bg-light" id="main">
+  <div class="container">
+    <a class="navbar-brand" href="#" data-aos="fade-right">
+        <img src="{{ navbar.icono.url }}" alt="" style="width: 200px; padding: 5px;">
+    </a>
+    <button class="navbar-toggler custom_hamb" type="button" onclick="showMenu();">
+      <div></div>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown" data-aos="fade-left">
+      <button class="close" onclick="showMenu();">
+        <div></div>
+      </button>
+      {% if navbar_items %}
+      <ul class="navbar-nav ms-auto">
+        {% for item in navbar_items %}
+          {% if item.orden == 1 %}
+            <li class="nav-item">
+              <a class="nav-link active" id="inicio__" aria-current="page" href="#" onclick="showMenu(this);">{{item.titulo}}</a>
+            </li>
+          {% else %}
+            {% if not item.is_button%}
+            <li class="nav-item">
+              <a class="nav-link scrollTo" id="{{item.seccion_id}}__" href="#{{item.seccion_id}}" onclick="showMenu(this);">{{item.titulo}}</a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+              <a class="nav-link custom_btn2" target="_blank" href="{{item.link}}">
+                <span>{{item.titulo}}</span>
+                <span>{{item.titulo}}</span>
+              </a>
+            </li>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      </ul>
+      {% else %}
+        <h1>Error al cargar data</h1>
+      {% endif %}
+    </div>
+  </div>
+</nav>
+{% else %}
+<h1>Error al cargar data</h1>
+{% endif %}
+
